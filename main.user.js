@@ -68,31 +68,58 @@
         const dateStr = now.toISOString().slice(0, 10); // YYYY-MM-DD
         const timeStr = now.toTimeString().slice(0, 8).replace(/:/g, '-'); // HH-MM-SS
         const key = `jp-reading-bookmark_${dateStr}_${timeStr}`;
+        logMessage(`Saving text to local storage: ${text}`);
         localStorage.setItem(key, text);
     }
 
-    function displaySavedText() {
+    function getLatestSavedText() {
         const keys = Object.keys(localStorage).filter(key => key.startsWith('jp-reading-bookmark_'));
-        keys.forEach(key => {
-            const text = localStorage.getItem(key);
-            const div = document.createElement('div');
-            div.style.margin = '10px';
-            div.style.padding = '10px';
-            div.style.border = '1px solid #ccc';
-            div.style.backgroundColor = '#f9f9f9';
-            div.innerText = text;
-            document.body.appendChild(div);
-        });
+        if (keys.length > 0) {
+            const latestKey = keys.sort().pop();
+            const text = localStorage.getItem(latestKey);
+            logMessage(`Displaying latest saved text: ${text}`);
+            return text;
+        }
+        return null;
     }
+
+    // function searchAndMoveToText() {
+    //     const text = getLatestSavedText();
+    //     if (!text) {
+    //         logMessage('No text found to enter.');
+    //         return;
+    //     }
+    //     window.find(text);
+    // }
+
+    // function pressCtrlF() {
+    //     const ctrlFEvent = new KeyboardEvent('keydown', {
+    //         key: 'f',
+    //         code: 'KeyF',
+    //         keyCode: 70,
+    //         ctrlKey: true,
+    //         bubbles: true,
+    //         cancelable: true
+    //     });
+    //     document.dispatchEvent(ctrlFEvent);
+    // }
+
+    // // Add an event listener to respond to the Ctrl+F event
+    // document.addEventListener('keydown', function(event) {
+    //     if (event.ctrlKey && event.key === 'f') {
+    //         event.preventDefault();
+    //         console.log('Ctrl+F was pressed');
+    //         // Add your custom action here
+    //     }
+    // });
 
     if (checkUrl(window.location.href)) {
         document.addEventListener('mouseup', () => {
             const highlightedText = getHighlightedText();
             // saveTextToFile(highlightedText);
             saveTextToLocalStorage(highlightedText);
-            showNotification('Text saved successfully!');
         });
     }
 
-    window.addEventListener('load', displaySavedText);
+    window.addEventListener('load', showNotification(getLatestSavedText()));
 })();
