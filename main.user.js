@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         Example Script
+// @name         JP-reading-bookmark
 // @namespace    http://tampermonkey.net/
 // @version      0.1
 // @description  Save highlighted text to a local file using FileSaver.js
