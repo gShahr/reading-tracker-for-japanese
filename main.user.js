@@ -46,10 +46,28 @@
         saveAs(blob, fileName);
     }
 
+    function showNotification(message) {
+        const notification = document.createElement('div');
+        notification.style.position = 'fixed';
+        notification.style.bottom = '10px';
+        notification.style.right = '10px';
+        notification.style.backgroundColor = '#4CAF50';
+        notification.style.color = 'white';
+        notification.style.padding = '10px';
+        notification.style.borderRadius = '5px';
+        notification.style.zIndex = '1000';
+        notification.innerText = message;
+        document.body.appendChild(notification);
+        setTimeout(() => {
+            document.body.removeChild(notification);
+        }, 3000);
+    }
+
     if (checkUrl(window.location.href)) {
         document.addEventListener('mouseup', () => {
             const highlightedText = getHighlightedText();
             saveTextToFile(highlightedText);
+            showNotification('Text saved successfully!');
         });
     }
 })();
