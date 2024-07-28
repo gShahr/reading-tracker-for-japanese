@@ -63,11 +63,36 @@
         }, 3000);
     }
 
+    function saveTextToLocalStorage(text) {
+        const now = new Date();
+        const dateStr = now.toISOString().slice(0, 10); // YYYY-MM-DD
+        const timeStr = now.toTimeString().slice(0, 8).replace(/:/g, '-'); // HH-MM-SS
+        const key = `jp-reading-bookmark_${dateStr}_${timeStr}`;
+        localStorage.setItem(key, text);
+    }
+
+    function displaySavedText() {
+        const keys = Object.keys(localStorage).filter(key => key.startsWith('jp-reading-bookmark_'));
+        keys.forEach(key => {
+            const text = localStorage.getItem(key);
+            const div = document.createElement('div');
+            div.style.margin = '10px';
+            div.style.padding = '10px';
+            div.style.border = '1px solid #ccc';
+            div.style.backgroundColor = '#f9f9f9';
+            div.innerText = text;
+            document.body.appendChild(div);
+        });
+    }
+
     if (checkUrl(window.location.href)) {
         document.addEventListener('mouseup', () => {
             const highlightedText = getHighlightedText();
-            saveTextToFile(highlightedText);
+            // saveTextToFile(highlightedText);
+            saveTextToLocalStorage(highlightedText);
             showNotification('Text saved successfully!');
         });
     }
+
+    window.addEventListener('load', displaySavedText);
 })();
